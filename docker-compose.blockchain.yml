@@ -1,0 +1,41 @@
+# Blockchain Security bundle
+
+services:
+  daml-viewer-mcp:
+    extends:
+      file: ./docker-compose.yml
+      service: daml-viewer-mcp
+
+  solazy-mcp:
+    extends:
+      file: ./docker-compose.yml
+      service: solazy-mcp
+
+  medusa-mcp:
+    extends:
+      file: ./docker-compose.yml
+      service: medusa-mcp
+
+networks:
+  mcp-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.28.0.0/16
+    driver_opts:
+      com.docker.network.bridge.enable_icc: "true"
+      com.docker.network.bridge.enable_ip_masquerade: "true"
+
+volumes:
+  daml-viewer-output:
+    driver: local
+  daml-viewer-uploads:
+    driver: local
+  solazy-output:
+    driver: local
+  solazy-uploads:
+    driver: local
+  medusa-output:
+    driver: local
+  medusa-uploads:
+    driver: local

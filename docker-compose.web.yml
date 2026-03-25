@@ -1,0 +1,62 @@
+# Web Security bundle
+#
+# Usage:
+#   docker compose -f docker-compose.web.yml build
+#   docker compose -f docker-compose.web.yml up -d
+
+services:
+  nuclei-mcp:
+    extends:
+      file: ./docker-compose.yml
+      service: nuclei-mcp
+
+  sqlmap-mcp:
+    extends:
+      file: ./docker-compose.yml
+      service: sqlmap-mcp
+
+  nikto-mcp:
+    extends:
+      file: ./docker-compose.yml
+      service: nikto-mcp
+
+  ffuf-mcp:
+    extends:
+      file: ./docker-compose.yml
+      service: ffuf-mcp
+
+  waybackurls-mcp:
+    extends:
+      file: ./docker-compose.yml
+      service: waybackurls-mcp
+
+  burp-mcp:
+    extends:
+      file: ./docker-compose.yml
+      service: burp-mcp
+
+networks:
+  mcp-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.28.0.0/16
+    driver_opts:
+      com.docker.network.bridge.enable_icc: "true"
+      com.docker.network.bridge.enable_ip_masquerade: "true"
+
+volumes:
+  nuclei-templates:
+    driver: local
+  nuclei-output:
+    driver: local
+  sqlmap-output:
+    driver: local
+  nikto-output:
+    driver: local
+  ffuf-output:
+    driver: local
+  ffuf-wordlists:
+    driver: local
+  waybackurls-output:
+    driver: local

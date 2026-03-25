@@ -1,0 +1,17 @@
+# Meta / tooling bundle
+
+services:
+  mcp-scan:
+    extends:
+      file: ./docker-compose.yml
+      service: mcp-scan
+
+networks:
+  mcp-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.28.0.0/16
+    driver_opts:
+      com.docker.network.bridge.enable_icc: "true"
+      com.docker.network.bridge.enable_ip_masquerade: "true"

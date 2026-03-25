@@ -18,7 +18,7 @@ Production-ready, Dockerized MCP (Model Context Protocol) servers for offensive 
 - **38 MCP Servers** covering reconnaissance, web security, binary analysis, blockchain security, cloud security, code security, secrets detection, threat intelligence, OSINT, Active Directory, fuzzing, and more
 - **300+ Security Tools** accessible via natural language through Claude or other MCP clients
 - **Production Hardened** - Non-root containers, minimal images, Trivy-scanned
-- **Docker Compose** orchestration for multi-tool workflows
+- **Docker Compose** orchestration for both full-stack and targeted workflows
 - **CI/CD Ready** with GitHub Actions for automated builds and security scanning
 
 ## Quick Start
@@ -28,19 +28,60 @@ Production-ready, Dockerized MCP (Model Context Protocol) servers for offensive 
 git clone https://github.com/FuzzingLabs/mcp-security-hub
 cd mcp-security-hub
 
-# Build all MCP servers
-docker-compose build
+# Build only the bundle you need
+bash scripts/setup.sh web
 
-# Start specific servers
-docker-compose up nmap-mcp nuclei-mcp -d
+# Start the selected bundle
+docker compose -f docker-compose.web.yml up -d
 
 # Verify health
-docker-compose ps
+bash scripts/healthcheck.sh web
 ```
+
+### Targeted Compose Bundles
+
+The repository now includes smaller compose bundles so you do not need to build the full hub every time.
+
+```bash
+# Full hub (existing behavior)
+docker compose -f docker-compose.yml build
+
+# Purpose-based bundles
+docker compose -f docker-compose.web.yml build
+docker compose -f docker-compose.recon.yml build
+docker compose -f docker-compose.binary.yml build
+docker compose -f docker-compose.aaos.yml build
+docker compose -f docker-compose.osint.yml build
+
+# Convenience wrapper
+bash scripts/setup.sh web
+bash scripts/setup.sh recon binary
+```
+
+| Group | Compose file | Included MCPs | Best fit |
+|-------|--------------|---------------|----------|
+| `all` | `docker-compose.yml` | All MCPs in the repository | Full lab or demo environment |
+| `web` | `docker-compose.web.yml` | `nuclei`, `sqlmap`, `nikto`, `ffuf`, `waybackurls`, `burp` | Web app scanning and web recon |
+| `recon` | `docker-compose.recon.yml` | `nmap`, `shodan`, `pd-tools`, `whatweb`, `masscan`, `zoomeye`, `networksdb`, `externalattacker` | External attack surface mapping and network recon |
+| `binary` | `docker-compose.binary.yml` | `ghidra`, `radare2`, `binwalk`, `yara`, `capa`, `ida` | Reverse engineering, firmware, malware triage |
+| `aaos` | `docker-compose.aaos.yml` | `ghidra`, `radare2`, `binwalk`, `yara`, `capa`, `ida`, `boofuzz`, `dharma`, `searchsploit` | AAOS-like embedded, firmware, and ECU-style workflows |
+| `osint` | `docker-compose.osint.yml` | `maigret`, `dnstwist` | Username, domain, and phishing-adjacent OSINT |
+| `cloud` | `docker-compose.cloud.yml` | `trivy`, `prowler`, `roadrecon` | Cloud, container, and Azure AD assessments |
+| `blockchain` | `docker-compose.blockchain.yml` | `daml-viewer`, `medusa`, `solazy` | Smart contract and blockchain security workflows |
+| `fuzzing` | `docker-compose.fuzzing.yml` | `dharma`, `boofuzz` | Grammar and protocol fuzzing |
+| `exploitation` | `docker-compose.exploitation.yml` | `searchsploit` | Exploit-DB search and exploit lookup |
+| `secrets` | `docker-compose.secrets.yml` | `gitleaks` | Secret and credential detection |
+| `threat-intel` | `docker-compose.threat-intel.yml` | `otx`, `virustotal` | IOC enrichment and threat intel lookups |
+| `active-directory` | `docker-compose.active-directory.yml` | `bloodhound` | AD relationship and attack-path analysis |
+| `password-cracking` | `docker-compose.password-cracking.yml` | `hashcat` | Offline hash cracking workflows |
+| `code-security` | `docker-compose.code-security.yml` | `semgrep` | Static code analysis |
+| `meta` | `docker-compose.meta.yml` | `mcp-scan` | MCP self-audit and tooling checks |
+
+`docker-compose.aaos.yml` is an inferred AAOS/embedded workflow bundle. The repository does not currently have an `aaos/` directory, so that bundle groups reverse-engineering and fuzzing MCPs that fit AAOS-style analysis best.
 
 ### Configure Claude Desktop / Claude Code
 
-**Important:** You must build the images first with `docker-compose build` before using them.
+**Important:** You must build the images first with either `docker compose -f docker-compose.<bundle>.yml build` or `bash scripts/setup.sh <bundle>` before using them.
 
 Copy the example config to your Claude Desktop configuration:
 
@@ -305,7 +346,8 @@ mcp-security-hub/
 │   └── healthcheck.sh      # Health verification
 ├── tests/
 │   └── test_mcp_servers.py # Unit tests
-├── docker-compose.yml      # Orchestration
+├── docker-compose.yml      # Full hub orchestration
+├── docker-compose.*.yml    # Targeted bundle orchestration
 └── .github/workflows/      # CI/CD
 ```
 

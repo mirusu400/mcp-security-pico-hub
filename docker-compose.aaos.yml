@@ -1,0 +1,95 @@
+# AAOS / embedded analysis bundle
+#
+# This repository does not currently include AAOS-specific MCP directories.
+# This bundle groups the reverse-engineering and fuzzing services that are the
+# closest fit for AAOS-style workflows.
+#
+# Usage:
+#   docker compose -f docker-compose.aaos.yml build
+#   docker compose -f docker-compose.aaos.yml up -d
+
+services:
+  ghidra-mcp:
+    extends:
+      file: ./docker-compose.yml
+      service: ghidra-mcp
+
+  radare2-mcp:
+    extends:
+      file: ./docker-compose.yml
+      service: radare2-mcp
+
+  binwalk-mcp:
+    extends:
+      file: ./docker-compose.yml
+      service: binwalk-mcp
+
+  yara-mcp:
+    extends:
+      file: ./docker-compose.yml
+      service: yara-mcp
+
+  capa-mcp:
+    extends:
+      file: ./docker-compose.yml
+      service: capa-mcp
+
+  ida-mcp:
+    extends:
+      file: ./docker-compose.yml
+      service: ida-mcp
+
+  boofuzz-mcp:
+    extends:
+      file: ./docker-compose.yml
+      service: boofuzz-mcp
+
+  dharma-mcp:
+    extends:
+      file: ./docker-compose.yml
+      service: dharma-mcp
+
+  searchsploit-mcp:
+    extends:
+      file: ./docker-compose.yml
+      service: searchsploit-mcp
+
+networks:
+  mcp-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.28.0.0/16
+    driver_opts:
+      com.docker.network.bridge.enable_icc: "true"
+      com.docker.network.bridge.enable_ip_masquerade: "true"
+
+volumes:
+  ghidra-projects:
+    driver: local
+  ghidra-samples:
+    driver: local
+  radare2-samples:
+    driver: local
+  binwalk-output:
+    driver: local
+  binwalk-uploads:
+    driver: local
+  yara-output:
+    driver: local
+  yara-samples:
+    driver: local
+  capa-output:
+    driver: local
+  capa-samples:
+    driver: local
+  dharma-grammars:
+    driver: local
+  dharma-output:
+    driver: local
+  boofuzz-scripts:
+    driver: local
+  boofuzz-results:
+    driver: local
+  searchsploit-output:
+    driver: local

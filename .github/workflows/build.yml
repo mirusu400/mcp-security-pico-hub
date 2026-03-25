@@ -12,7 +12,8 @@ on:
     branches: [master, main, develop]
     paths:
       - '**/Dockerfile'
-      - '**/docker-compose.yml'
+      - 'docker-compose.yml'
+      - 'docker-compose.*.yml'
       - '.github/workflows/build.yml'
       - '*/*/package*.json'
       - '*/*/requirements*.txt'
@@ -158,4 +159,3 @@ jobs:
       - name: Run tests
         run: |
           pytest tests/ -v --tb=short || true
-

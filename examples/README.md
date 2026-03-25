@@ -8,7 +8,8 @@ Build the Docker images first:
 
 ```bash
 cd mcp-security-hub
-docker-compose build
+bash scripts/setup.sh web
+# or: docker compose -f docker-compose.web.yml build
 ```
 
 ## Claude Desktop Configuration

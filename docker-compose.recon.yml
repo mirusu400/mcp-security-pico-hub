@@ -1,0 +1,62 @@
+# Reconnaissance bundle
+#
+# Usage:
+#   docker compose -f docker-compose.recon.yml build
+#   docker compose -f docker-compose.recon.yml up -d
+
+services:
+  nmap-mcp:
+    extends:
+      file: ./docker-compose.yml
+      service: nmap-mcp
+
+  shodan-mcp:
+    extends:
+      file: ./docker-compose.yml
+      service: shodan-mcp
+
+  pd-tools-mcp:
+    extends:
+      file: ./docker-compose.yml
+      service: pd-tools-mcp
+
+  whatweb-mcp:
+    extends:
+      file: ./docker-compose.yml
+      service: whatweb-mcp
+
+  masscan-mcp:
+    extends:
+      file: ./docker-compose.yml
+      service: masscan-mcp
+
+  zoomeye-mcp:
+    extends:
+      file: ./docker-compose.yml
+      service: zoomeye-mcp
+
+  networksdb-mcp:
+    extends:
+      file: ./docker-compose.yml
+      service: networksdb-mcp
+
+  externalattacker-mcp:
+    extends:
+      file: ./docker-compose.yml
+      service: externalattacker-mcp
+
+networks:
+  mcp-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.28.0.0/16
+    driver_opts:
+      com.docker.network.bridge.enable_icc: "true"
+      com.docker.network.bridge.enable_ip_masquerade: "true"
+
+volumes:
+  whatweb-output:
+    driver: local
+  masscan-output:
+    driver: local
